@@ -1,0 +1,100 @@
+- name: install python 2
+  become: true
+  become_user: root
+  raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- name: discover facts
+  setup:
+
+- name: disable automatic updates
+  become: true
+  become_user: root
+  lineinfile:
+    line: 'APT::Periodic::Enable "0";'
+    dest: /etc/apt/apt.conf.d/10periodic
+
+- name: Pass options to dpkg on run
+  become: true
+  become_user: root
+  apt:
+    upgrade: dist
+    update_cache: yes
+    dpkg_options: 'force-confold,force-confdef'
+- name: install default packages
+  become: true
+  become_user: root
+  apt:
+    name: '{{item}}'
+    state: latest
+  with_items:
+   - python-pip
+   - vim
+   - htop
+   - python-dev
+   - python-netaddr
+   - libffi-dev
+   - libssl-dev
+   - apt-transport-https
+   - ca-certificates
+   - bridge-utils
+   - virtinst
+   - qemu-kvm
+   - libvirt-bin
+   - cloud-image-utils
+
+- name: add dockerproject APT key
+  become: true
+  become_user: root
+  apt_key:
+    keyserver: p80.pool.sks-keyservers.net
+    id: 58118E89F3A912897C070ADBF76221572C52609D
+- name: add dockerproject repo to apt lists
+  become: true
+  become_user: root
+  apt_repository:
+    repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
+    state: present
+- name: install docker-engine 1.12.6
+  become: true
+  become_user: root
+  apt:
+   name: docker-engine=1.12.6-0~ubuntu-xenial
+   state: present
+   force: yes
+- name: ensure the MountFlags=shared parameter is set for docker.service
+  become: true
+  become_user: root
+  ini_file:
+    dest: /etc/systemd/system/docker.service.d/shared_mount.conf
+    section: Service
+    option: MountFlags
+    value: shared
+    mode: 0644
+- name: restart docker service
+  become: true
+  become_user: root
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+
+- name: update pip
+  become: true
+  become_user: root
+  pip:
+   name: pip
+   state: latest
+- name: update pip
+  become: true
+  become_user: root
+  pip:
+   name: '{{item}}'
+   state: present
+  with_items:
+  - docker==2.0.1
+  - ansible
+- name: create qemup-ifup script
+  template:
+    src: templates/qemu-ifup
+    dest: /etc/qemu-ifup
+    mode: 755

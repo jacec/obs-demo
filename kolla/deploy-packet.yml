@@ -1,0 +1,26 @@
+---
+- name: create ubuntu device
+  hosts: localhost
+  connection: local
+  tasks:
+
+  - packet_device:
+      auth_token: "{{packet_key}}"
+      project_id: "{{packet_project}}"
+      hostnames: [rhs-control-1,rhs-control-2,rhs-control-3]
+      operating_system: ubuntu_16_04
+      plan: baremetal_0
+      facility: sjc1
+    register: packet_info
+  - dnsimple:
+      account_api_token: "{{dnsimple_key}}"
+      account_email: "{{dnsimple_id}}"
+      domain: cloudsushi.io
+      record: "{{item.0.hostname}}"
+      type: A
+      value: "{{item.0.public_ipv4}}"
+    with_subelements:
+     - "{{packet_info['devices']}}"
+     - ip_addresses
+    register: record
+  - debug: var=record

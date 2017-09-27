@@ -1,0 +1,25 @@
+---
+- name: create ubuntu device
+  hosts: localhost
+  connection: local
+  vars:
+    packet_project: 84fe4749-d08b-4042-b722-5573466f35f3
+    build: present
+  tasks:
+
+  - packet_device:
+      project_id: "{{packet_project}}"
+      hostnames: [cloud]
+      operating_system: ubuntu_16_04
+      plan: baremetal_1
+      facility: sjc1
+      state: "{{build}}"
+    register: packet_info
+  - packet_device:
+      project_id: "{{packet_project}}"
+      hostnames: [compute1,compute2]
+      operating_system: ubuntu_16_04
+      plan: baremetal_2
+      facility: sjc1
+      state: "{{build}}"
+    register: packet_info

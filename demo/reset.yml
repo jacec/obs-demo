@@ -1,0 +1,80 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+
+    - name: delete ucpe nodes
+      os_server:
+        state: absent
+        name: "{{item}}"
+        image: xenial
+        key_name: "{{server_key}}"
+        timeout: 600
+        flavor: 10
+        delete_fip: yes
+        nics:
+          - net-name: "{{network_names[0]}}"
+          - net-name: "{{network_names[1]}}"
+          - net-name: "{{network_names[2]}}"
+        meta:
+          hostname: "{{item}}"
+          group: ucpe
+      with_items:
+        - "{{ucpe_nodes}}"
+
+    - name: delete ird node
+      os_server:
+        state: absent
+        name: CDG
+        image: xenial
+        key_name: "{{server_key}}"
+        timeout: 600
+        flavor: 10
+        delete_fip: yes
+        nics:
+          - net-name: "{{network_names[0]}}"
+          - net-name: "{{network_names[1]}}"
+          - net-name: "{{network_names[2]}}"
+        meta:
+          hostname: CDG
+          group: ird
+
+    - name: delete router
+      os_router:
+        state: absent
+        name: obs-router
+        network: public
+        interfaces:
+          - "{{network_names[0]}}"
+          - "{{network_names[1]}}"
+          - "{{network_names[2]}}"
+
+    - name: remove networks for broadband, dslvpn, sdslvpn
+      os_network:
+        state: absent
+        name: "{{item}}"
+        external: false
+      with_items:
+        - "{{network_names}}"
+
+    - name: remove nodes and images
+      scm_node:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        site: "{{item}}"
+        state: "absent"
+      with_items:
+        - "{{scm_names}}"
+      ignore_errors: true
+
+    - name: remove org
+      scm_org:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        city: "{{scm_cities[0]}}"
+        state: "absent"
+      ignore_errors: true

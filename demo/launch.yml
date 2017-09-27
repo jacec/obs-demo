@@ -1,0 +1,92 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+
+    - name: create networks for broadband, dslvpn, sdslvpn
+      os_network:
+        state: present
+        name: "{{item}}"
+        external: false
+      with_items:
+        - "{{network_names}}"
+
+    - name: create subnets for broadband, dslvpn, sdslvpn
+      os_subnet:
+        state: present
+        network_name: "{{item.0}}"
+        name: "{{item.0}}"
+        cidr: "{{item.1}}"
+        dns_nameservers:
+           - 8.8.4.4
+           - 8.8.8.8
+      with_together:
+        - "{{network_names}}"
+        - "{{network_cidrs}}"
+
+    - name: create/update router
+      os_router:
+        state: present
+        name: obs-router
+        network: public
+        interfaces:
+          - "{{network_names[0]}}"
+
+    - name: create ucpe nodes
+      os_server:
+        state: present
+        name: "{{item}}"
+        image: xenial
+        key_name: "{{server_key}}"
+        timeout: 600
+        flavor: 10
+        auto_ip: no
+        userdata: "{{ lookup('file', 'user-data.txt') }}"
+        nics:
+          - net-name: "{{network_names[0]}}"
+          - net-name: "{{network_names[1]}}"
+          - net-name: "{{network_names[2]}}"
+        meta:
+          hostname: "{{item}}"
+          group: ucpe
+      with_items:
+        - "{{ucpe_nodes}}"
+
+    - name: associate floating_ip with ucpe nodes
+      os_floating_ip:
+        server: "{{item}}"
+        nat_destination: "{{network_names[0]}}"
+        network: public
+        state: present
+        wait: yes
+        timeout: 120
+      with_items:
+        - "{{ucpe_nodes}}"
+
+
+    - name: create ird node
+      os_server:
+        state: present
+        name: CDG
+        image: xenial
+        key_name: "{{server_key}}"
+        timeout: 600
+        flavor: 10
+        auto_ip: no
+        userdata: "{{ lookup('file', 'user-data.txt') }}"
+        nics:
+          - net-name: "{{network_names[0]}}"
+          - net-name: "{{network_names[1]}}"
+          - net-name: "{{network_names[2]}}"
+        meta:
+          hostname: CDG
+          group: ird
+
+    - name: associate floating_ip with ird node
+      os_floating_ip:
+        server: CDG
+        nat_destination: "{{network_names[0]}}"
+        network: public
+        state: present
+        wait: yes
+        timeout: 120

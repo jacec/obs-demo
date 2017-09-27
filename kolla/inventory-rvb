@@ -1,0 +1,11 @@
+[control]
+cld
+
+[compute]
+cpt1
+cpt2
+
+[all:vars]
+domain=kumulus.co
+ansible_connection=ssh
+ansible_ssh_user=root

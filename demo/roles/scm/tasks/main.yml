@@ -1,0 +1,65 @@
+- name: create org
+  scm_org:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    city: "{{scm_cities[0]}}"
+    state: "present"
+  register: org_out
+
+
+- name: remove default HQ IRD site
+  scm_site:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    city: "{{scm_cities[0]}}"
+    site: "HQ"
+    state: "absent"
+
+- name: create sites
+  scm_site:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    city: "{{item.0}}"
+    site: "{{item.1}}"
+    state: "present"
+  with_together:
+    - "{{scm_cities}}"
+    - "{{scm_names}}"
+
+- name: register nodes and images
+  scm_node:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    site: "{{item}}"
+    state: "present"
+  with_items:
+    - "{{scm_names}}"
+
+- name: create outbound rule
+  scm_rules:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    direction: "outbound"
+    state: "present"
+
+# - name: register ird image paths
+#   scm_image:
+#     url: "{{scm_url}}"
+#     user: "admin"
+#     password: "pppp"
+#     org: "{{scm_org}}"
+#     site: "{{item}}"
+#     state: "present"
+#   with_items:
+#     - "{{scm_names}}"
+#   register: images

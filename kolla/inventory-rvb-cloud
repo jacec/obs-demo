@@ -1,0 +1,11 @@
+[control]
+cloud
+
+[compute]
+compute1
+compute2
+
+[all:vars]
+domain=rvbdemo.com
+ansible_connection=ssh
+ansible_ssh_user=root

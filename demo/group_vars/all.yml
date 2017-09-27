@@ -1,0 +1,13 @@
+ansible_ssh_user: ubuntu
+github_user: rstarmer
+network_names: [broadband, dslvpn, sdslvpn]
+network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
+ucpe_nodes: [LHR,MIL]
+server_key: rhs
+scm_org: FIAT
+scm_url: https://sdpdemo.riverbed.cc/api/scm.config/1.0/
+scm_cities: ["Paris","London","Milan"]
+scm_names: ["CDG","LHR","MIL"]
+mac_addr_1: DE:AD:BE:EF:49:41
+mac_addr_2: DE:AD:BE:EF:AC:04
+mac_addr_3: DE:AD:BE:EF:28:7B
