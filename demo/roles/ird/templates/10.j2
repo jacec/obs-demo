@@ -18,40 +18,45 @@ iface br3 inet dhcp
      bridge_maxwait 0
 
 auto br4
-iface br4 inet dhcp
+iface br4 inet static
+     address 0.0.0.0
      bridge_ports ens4
      bridge_stp off
      bridge_fd 0
      bridge_maxwait 0
 
 auto br5
-iface br5 inet dhcp
+iface br5 inet static
+     address 0.0.0.0
      bridge_ports ens5
      bridge_stp off
      bridge_fd 0
      bridge_maxwait 0
 
 
-#auto br3b
-#iface br3b inet static
-#    bridge_stp off
-#    bridge_fd 0
-#    bridge_maxwait 0
-#    pre-up    brctl addbr br3b
-#    post-down brctl delbr br3b
-#
-#auto br4b
-#iface br4b inet static
-#    bridge_stp off
-#    bridge_fd 0
-#    bridge_maxwait 0
-#    pre-up    brctl addbr br4b
-#    post-down brctl delbr br4b
-#
-#auto br5b
-#iface br5b inet static
-#    bridge_stp off
-#    bridge_fd 0
-#    bridge_maxwait 0
-#    pre-up    brctl addbr br5b
-#    post-down brctl delbr br5b
+auto br3b
+iface br3b inet static
+    address 0.0.0.0
+    bridge_stp off
+    bridge_fd 0
+    bridge_maxwait 0
+    pre-up    brctl addbr br3b
+    post-down brctl delbr br3b
+
+auto br4b
+iface br4b inet static
+    address 0.0.0.0
+    bridge_stp off
+    bridge_fd 0
+    bridge_maxwait 0
+    pre-up    brctl addbr br4b
+    post-down brctl delbr br4b
+
+auto br5b
+iface br5b inet static
+    address 0.0.0.0
+    bridge_stp off
+    bridge_fd 0
+    bridge_maxwait 0
+    pre-up    brctl addbr br5b
+    post-down brctl delbr br5b

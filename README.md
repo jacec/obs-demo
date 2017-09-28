@@ -1,5 +1,7 @@
 # OBS Demo / PoC
 
+[![build status](https://gitlab.kumulus.co/rvb-demo/demo-build/badges/master/build.svg)](https://gitlab.kumulus.co/rvb-demo/demo-build/commits/master)
+
 This repository is for storing any environment scripts and or supporting code for the OBS demo / PoC.
 
 It's private, and only those added as collaborators can see it.

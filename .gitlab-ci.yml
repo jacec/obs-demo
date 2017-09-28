@@ -1,0 +1,10 @@
+before_script:
+ - pip install -U python-openstackclient
+ - curl -O wget https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/openstack.py
+launch:
+ script:
+   - source obs.rc
+   - ansible-playbook -i ./openstack.py launch.yml
+   - ansible-playbok -i ./opemstack.py build.yml
+ tags:
+   - openstack
