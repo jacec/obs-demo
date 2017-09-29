@@ -29,6 +29,8 @@
       get_url:
         dest: /var/lib/libvirt/images/
         url: "{{image_info.image}}"
+        url_username: "admin"
+        url_password: "pppp"
 
 
 - hosts: ird

@@ -1,0 +1,31 @@
+- hosts: ucpe
+  gather_facts: False
+  become: true
+  become_user: root
+  tasks:
+    # Install base resources, applications, docker, libvirt, etc.
+    - include_role:
+        name: base
+    # Create ucpe specific networks, SCM VPN endpoint, etc.
+    - include_role:
+        name: ucpe
+    - name: register ucpe vGW image path
+      scm_image:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        site: "{{ansible_nodename|upper}}"
+        state: "present"
+      register: image_info
+    - include_role:
+        name: kvm_cloud
+      vars:
+        instance_name: vgw
+        image_url: "{{image_info.image}}"
+        image_type: zip
+        image_pass: pppp
+        image_user: admin
+        
+
+

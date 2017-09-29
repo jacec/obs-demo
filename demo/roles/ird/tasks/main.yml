@@ -11,6 +11,7 @@
   template:
     src: templates/99.j2
     dest: /etc/network/interfaces.d/99-disable-newtork-config.cfg
+  register: network_interface
 
 - name: remove cloud-init network config
   become: true
@@ -19,9 +20,14 @@
     dest: /etc/network/interfaces.d/50-cloud-init.cfg
     state: absent
 
-- name: restart networking service
+- name: restart machine
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
   become: true
   become_user: root
-  service:
-    name: networking
-    state: restarted
+  ignore_errors: true
+  when: network_interface|changed
+- name: waiting for server to come back
+  local_action: wait_for host={{ inventory_hostname }} state=started delay=15 timeout=30
+  when: network_interface|changed

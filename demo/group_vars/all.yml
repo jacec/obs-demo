@@ -3,7 +3,7 @@ github_user: rstarmer
 network_names: [broadband, dslvpn, sdslvpn]
 network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
 ucpe_nodes: [LHR,MIL]
-server_key: rhs
+server_key: kumul
 scm_org: FIAT
 scm_url: https://sdpdemo.riverbed.cc/api/scm.config/1.0/
 scm_cities: ["Paris","London","Milan"]

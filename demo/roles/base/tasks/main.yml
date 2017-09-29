@@ -61,6 +61,7 @@
    name: docker-engine=1.12.6-0~ubuntu-xenial
    state: present
    force: yes
+  register: docker_installed
 - name: ensure the MountFlags=shared parameter is set for docker.service
   become: true
   become_user: root
@@ -77,6 +78,7 @@
     state: restarted
     daemon_reload: yes
     name: docker
+  when: docker_installed.changed
 
 - name: update pip
   become: true
