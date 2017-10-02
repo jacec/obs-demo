@@ -41,6 +41,7 @@
    - qemu-kvm
    - libvirt-bin
    - cloud-image-utils
+   - unzip
 
 - name: add dockerproject APT key
   become: true

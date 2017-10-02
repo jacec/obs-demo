@@ -4,43 +4,18 @@
     url: "{{image_url}}"
     dest: "/var/lib/libvirt/images/{{instance_name}}.img"
     mode: 644
-  when: image_pass is undefined
 
-- name: get cloud image with password
-  get_url:
-    url: "{{image_url}}"
-    dest: "/var/lib/libvirt/images/{{instance_name}}.zip"
-    url_password: "{{image_pass}}"
-    url_username: "{{image_user}}"
-    mode: 644
-  when: image_pass is not undefined
-  register: vgw_image
+- name: check image size to determine if we need to resize the image to 64G
+  command: "qemu-img info {{instance_name}}"
+  register: qemu_result
+  args:
+    chdir: /var/lib/libvirt/images
 
-- name: extract vGW image
-  unarchive:
-    src: "/var/lib/libvirt/images/{{instance_name}}.zip"
-    remote_src: yes
-    dest: "/var/lib/libvirt/images/"
-    list_files: yes
-  when: image_pass is not undefined
- 
-- find:
-    paths: /var/lib/libvirt/
-    pattern: '*.qcow2'
-    recurse: yes
-  register: image_name
-- debug: var=image_name
-#- name: check image size to determine if we need to resize the image to 64G
-#  command: "qemu-img info {{instance_name}}"
-#  register: qemu_result
-#  args:
-#    chdir: /var/lib/libvirt/images
-
-#- name: resize the base image to 64G if it isn't already
-#  command: "qemu-img resize {{instance_name}}.img 64G"
-#  when: "qemu_result.stdout | search('virtual size: 64G') == false"
-#  args:
-#    chdir: /var/lib/libvirt/images
+- name: resize the base image to 64G if it isn't already
+  command: "qemu-img resize {{instance_name}}.img 64G"
+  when: "qemu_result.stdout | search('virtual size: 64G') == false"
+  args:
+    chdir: /var/lib/libvirt/images
 
 - name: ensure we have a metadata directory to build our instance from
   file:
@@ -62,8 +37,8 @@
   command: |
     kvm -m 8192 \
     -smp 4 \
-    -cdrom "/var/lib/libvirt/images/{{instance_name}}-CD.ios" \
+    -cdrom "/var/lib/libvirt/images/{{instance_name}}-CD.iso" \
     -device e1000,netdev=br3,mac="{{mac_addr_1}}" -netdev tap,id=br3,script=/etc/qemu-ifup \
     -device e1000,netdev=br4,mac="{{mac_addr_2}}" -netdev tap,id=br4,script=/etc/qemu-ifup \
     -device e1000,netdev=br5,mac="{{mac_addr_3}}" -netdev tap,id=br5,script=/etc/qemu-ifup \
-    -drive file={{image_name.files[0]path}},if=virtio,cache=writeback,index=0
+    -drive file=/var/lib/libvirt/images/{{instance_name}}.img,if=virtio,cache=writeback,index=0

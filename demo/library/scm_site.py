@@ -67,7 +67,7 @@ def site_absent(data=None):
 def main():
     fields = {
         "user": {"required": True, "type": "str"},
-        "password": {"required": True, "type": "str"},
+        "password": {"required": True, "type": "str", "no_log": True},
         "url": {"required": True, "type": "str" },
         "org": {"required": True, "type": "str"},
         "site": {"required": True, "type": "str"},

@@ -1,62 +1,31 @@
 auto lo
 iface lo inet loopback
 
-auto ens3
-iface ens3 inet manual
+{% for int in interfaces %}
+auto {{int}}
+iface {{int}} inet manual
+{% endfor %}
 
-auto ens4
-iface ens4 inet manual
+{% for bridge in bridges_in %}
+auto {{bridge}}
+iface {{bridge}} inet {% if loop.index == 1 %}dhcp{% else %}static
+{% endif %}
 
-auto ens5
-iface ens5 inet manual
-
-auto br3
-iface br3 inet dhcp
-     bridge_ports ens3
+     bridge_ports {{interfaces[loop.index-1]}}
      bridge_stp off
      bridge_fd 0
      bridge_maxwait 0
 
-auto br4
-iface br4 inet static
-     address 0.0.0.0
-     bridge_ports ens4
-     bridge_stp off
-     bridge_fd 0
-     bridge_maxwait 0
-
-auto br5
-iface br5 inet static
-     address 0.0.0.0
-     bridge_ports ens5
-     bridge_stp off
-     bridge_fd 0
-     bridge_maxwait 0
-
-
-auto br3b
-iface br3b inet static
+{%endfor%}
+{% for bridge in bridges_out %}
+auto {{bridge}}
+iface {{bridge}} inet static
     address 0.0.0.0
     bridge_stp off
     bridge_fd 0
     bridge_maxwait 0
-    pre-up    brctl addbr br3b
-    post-down brctl delbr br3b
+    pre-up    brctl addbr {{bridge}}
+    post-down brctl delbr {{bridge}}
 
-auto br4b
-iface br4b inet static
-    address 0.0.0.0
-    bridge_stp off
-    bridge_fd 0
-    bridge_maxwait 0
-    pre-up    brctl addbr br4b
-    post-down brctl delbr br4b
+{% endfor %}
 
-auto br5b
-iface br5b inet static
-    address 0.0.0.0
-    bridge_stp off
-    bridge_fd 0
-    bridge_maxwait 0
-    pre-up    brctl addbr br5b
-    post-down brctl delbr br5b
