@@ -1,4 +1,4 @@
-{% for key,value in ucpe_nodes[node_name].bridges.iteritems() %}
+{% for key,value in nodes[node_name].bridges.iteritems() %}
 {% if value.interface %}
 auto {{value.interface}}
 iface {{value.interface}} inet manual

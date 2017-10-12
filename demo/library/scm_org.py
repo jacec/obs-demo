@@ -59,7 +59,7 @@ def main():
         "org_long": {"required": False, "type": "str", "default": "Organization Name"},
         "city": {"required": True, "type": "str"},
         "country": {"default": "US", "required": False, "type": "str"},
-        "tz": {"default": "Americas/Los_Angeles", "required": False, "type": "str"},
+        "tz": {"default": "America/Los_Angeles", "required": False, "type": "str"},
         "v4pool": {"default": "172.16.0.0/12", "required": False, "type": "str"},
         "state": {
             "default": "present",

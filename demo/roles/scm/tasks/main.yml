@@ -1,12 +1,12 @@
 - name: create org
   scm_org:
-    url: "{{scm_url}}"
+    url: "{{prov_scm_url}}"
     user: "admin"
     password: "pppp"
-    org: "{{scm_org}}"
-    org_long: "{{scm_org_long}}"
-    city: "{{scm_city}}"
-    tz: "{{scm_tz}}"
+    org: "{{prov_scm_org}}"
+    org_long: "{{prov_scm_org_long}}"
+    city: "{{prov_scm_city}}"
+    tz: "{{prov_scm_tz}}"
     state: "present"
   register: org_out
 - debug:
@@ -14,10 +14,34 @@
 
 - name: remove default HQ IRD site
   scm_site:
-    url: "{{scm_url}}"
+    url: "{{prov_scm_url}}"
     user: "admin"
     password: "pppp"
-    org: "{{scm_org}}"
-    city: "{{scm_city}}"
+    org: "{{prov_scm_org}}"
+    city: "{{prov_scm_city}}"
+    site: "HQ"
+    state: "absent"
+
+- name: create org
+  scm_org:
+    url: "{{ten_scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{ten_scm_org}}"
+    org_long: "{{ten_scm_org_long}}"
+    city: "{{ten_scm_city}}"
+    tz: "{{ten_scm_tz}}"
+    state: "present"
+  register: org_out
+- debug:
+    var: org_out
+
+- name: remove default HQ IRD site
+  scm_site:
+    url: "{{ten_scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{ten_scm_org}}"
+    city: "{{ten_scm_city}}"
     site: "HQ"
     state: "absent"

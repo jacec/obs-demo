@@ -1,35 +1,26 @@
 os_github_user: rstarmer
-os_network_names: [broadband, dslvpn, sdslvpn]
+os_network_names: [broadband, adslvpn, sdslvpn]
 os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
-os_server_key: ird
-prov_scm_org: RENAULT
-prov_scm_org_long: Renault Motorcars, Inc.
+os_server_key: irg
+prov_scm_org: LOREAL
+prov_scm_org_long: Loreal Inc.
 prov_scm_city: Paris
 prov_scm_country: FR
 prov_scm_tz: Europe/Berlin
-prov_scm_url: https://sdpdemo.riverbed.cc/api/scm.config/1.0/
-prov_scm_names: ["IRD","SFO","BOS"]
-ird_nodes:
-  IRD:
+prov_scm_url: https://proscm.rvbdemo.com/api/scm.config/1.0/
+prov_scm_names: ["IRG","PIRG","SFO","BOS"]
+ten_scm_org: LOREAL
+ten_scm_org_long: Loreal Inc.
+ten_scm_city: Paris
+ten_scm_country: FR 
+ten_scm_tz: Europe/Berlin
+ten_scm_url: https://tenscm.rvbdemo.com/api/scm.config/1.0/
+ten_scm_names: ["IRG","PIRG","SFO","BOS"]
+nodes:
+  IRG:
     city: Boston
     country: US
     tz: America/New_York
-    interfaces: 
-      - enp11s0
-      - enp9s0f0
-      - enp9s0f1
-      - enp9s0f3
-      - enp9s0f3
-    bridges:
-      - broadband
-      - adslvpn
-      - sdslvpn
-      - ird0
-      - ird1
-      - ird2
-      - ird3
-      - ird4
-      - ird5
     interfaces:
       - enp11s0
       - enp9s0f0
@@ -52,7 +43,7 @@ ird_nodes:
       pmpls:
               interface: enp9s0f3
               dhcp: false
-      ird0:
+      pvgwirg0:
               interface: false
               dhcp: true
               ip: 172.31.254.0/24
@@ -65,46 +56,70 @@ ird_nodes:
       tvgw2:
               interface: false
               dhcp: true
-      ird1:
+      tvgw0irg1:
               interface: false
               dhcp: true
-      ird2:
+      tvgw1irg2:
               interface: false
               dhcp: true
-      ird3:
+      tvgw2irg3:
               interface: false
               dhcp: true
-    tenvgw2:
-      wan:
-        - tenvgw2
-        - ird5
-        - broadband
-    tenvgw1:
-      wan:
-        - tenvgw1
-        - ird4
-        - adslvpn
-        - sdslvpn
-    tenvgw0:
-      wan:
-        - tenvgw0
-        - ird3
-        - broadband
-        - adslvpn
-        - sdslvpn
-    tpvgw:
-      wan:
-        - ird0
-      lan:
-        - tenvgw0
-        - tenvgw1
-        - tenvgw2
-    pvgw:
-      wan:
-        - pr0
-        - pr1
-        - broadband
-ucpe_nodes:
+    vgws:
+      tenvgw2:
+        wan:
+          - tenvgw2
+          - irg5
+          - broadband
+      tenvgw1:
+        wan:
+          - tenvgw1
+          - irg4
+          - adslvpn
+          - sdslvpn
+      tenvgw0:
+        wan:
+          - tenvgw0
+          - irg3
+          - broadband
+          - adslvpn
+          - sdslvpn
+    pvgws:
+      pvgw:
+        wan:
+          - irg0
+        lan:
+          - tenvgw0
+          - tenvgw1
+          - tenvgw2
+  PIRG:
+    city: Boston
+    country: US
+    tz: America/New_York
+    interfaces: 
+      - enp0s20f1
+      - enp0s20f2
+      - enp0s20f3
+    bridges:
+      broadband:
+              interface: enp0s20f1
+              dhcp: false
+      adslvpn:
+              interface: enp0s20f2
+              dhcp: false
+      tmpls:
+              interface: enp0s20f3
+              dhcp: false
+      pgwirg0:
+              interface: false
+              dhcp: true
+              ip: 172.31.254.0/24
+    pvgws:
+      pvgw:
+        wan:
+          - pgwirg0
+          - broadband
+          - adslvpn
   SFO:
     city: San Francisco
     country: US
@@ -131,21 +146,23 @@ ucpe_nodes:
       mgmt:
               interface: false
               dhcp: false
-    tenvgw:
-      wan:
-        - tenbroadband
-        - tenadslvpn
-      lan:
-        - tenremote
-    pvgw:
-      wan:
-        - broadband
-        - broadband
-        - adslvpn
-      lan:
-        - tenbroadband
-        - tenadslvpn
-        - mgmt
+    tenvgws:
+      tenvgw:
+        wan:
+          - tenbroadband
+          - tenadslvpn
+        lan:
+          - tenremote
+    pvgws:
+      pvgw:
+        wan:
+          - broadband
+          - broadband
+          - adslvpn
+        lan:
+          - tenbroadband
+          - tenadslvpn
+          - mgmt
   BOS:
     city: Boston
     country: US
@@ -172,19 +189,21 @@ ucpe_nodes:
       mgmt:
               interface: false
               dhcp: false
-    tenvgw:
-      wan:
-        - tenbroadband
-        - tenadslvpn
-      lan:
-        - tenremote
-    pvgw:
-      wan:
-        - broadband
-        - broadband
-        - adslvpn
-      lan:
-        - tenbroadband
-        - tenadslvpn
-        - mgmt
+    tvgws:
+      tenvgw:
+        wan:
+          - tenbroadband
+          - tenadslvpn
+        lan:
+          - tenremote
+    pvgws:
+      pvgw:
+        wan:
+          - broadband
+          - broadband
+          - adslvpn
+        lan:
+          - tenbroadband
+          - tenadslvpn
+          - mgmt
 
