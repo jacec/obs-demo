@@ -1,7 +1,7 @@
 os_github_user: rstarmer
 os_network_names: [broadband, dslvpn, sdslvpn]
 os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
-os_server_key: irg
+os_server_key: ird
 prov_scm_org: RENAULT
 prov_scm_org_long: Renault Motorcars, Inc.
 prov_scm_city: Paris
@@ -30,37 +30,107 @@ ird_nodes:
       - ird3
       - ird4
       - ird5
-    tenvgw:
+    interfaces:
+      - enp11s0
+      - enp9s0f0
+      - enp9s0f1
+      - enp9s0f2
+      - enp9s0f3
+    bridges:
+      broadband:
+              interface: enp11s0
+              dhcp: false
+      adslvpn:
+              interface: enp9s0f0
+              dhcp: false
+      sdslvpn:
+              interface: enp9s0f1
+              dhcp: false
+      tmpls:
+              interface: enp9s0f2
+              dhcp: false
+      pmpls:
+              interface: enp9s0f3
+              dhcp: false
+      ird0:
+              interface: false
+              dhcp: true
+              ip: 172.31.254.0/24
+      tvgw0:
+              interface: false
+              dhcp: true
+      tvgw1:
+              interface: false
+              dhcp: true
+      tvgw2:
+              interface: false
+              dhcp: true
+      ird1:
+              interface: false
+              dhcp: true
+      ird2:
+              interface: false
+              dhcp: true
+      ird3:
+              interface: false
+              dhcp: true
+    tenvgw2:
       wan:
-        - tenbroadband
-        - tenadslvpn
-      lan:
-        - tenremote
-    pvgw:
-      wan:
+        - tenvgw2
+        - ird5
         - broadband
+    tenvgw1:
+      wan:
+        - tenvgw1
+        - ird4
+        - adslvpn
+        - sdslvpn
+    tenvgw0:
+      wan:
+        - tenvgw0
+        - ird3
         - broadband
         - adslvpn
+        - sdslvpn
+    tpvgw:
+      wan:
+        - ird0
       lan:
-        - tenbroadband
-        - tenadslvpn
-        - mgmt
+        - tenvgw0
+        - tenvgw1
+        - tenvgw2
+    pvgw:
+      wan:
+        - pr0
+        - pr1
+        - broadband
 ucpe_nodes:
   SFO:
     city: San Francisco
     country: US
     tz: America/Los_Angeles
     interfaces:
-      - eth1
       - eth2
       - eth3
     bridges:
-      - broadband
-      - adslvpn
-      - tenremote 
-      - tenbroadband
-      - tenadslvpn
-      - mgmt
+      broadband:
+              interface: eth1
+              dhcp: false
+      adslvpn:
+              interface: eth2
+              dhcp: false
+      tenremote:
+              interface: eth3
+              dhcp: false
+      tenbroadband:
+              interface: false
+              dhcp: false
+      tenadslvpn:
+              interface: false
+              dhcp: false
+      mgmt:
+              interface: false
+              dhcp: false
     tenvgw:
       wan:
         - tenbroadband
