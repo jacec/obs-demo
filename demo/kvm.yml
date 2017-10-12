@@ -1,0 +1,35 @@
+---
+- hosts: kvm
+  gather_facts: False
+  become: true
+  become_user: root
+  vars:
+    image_path: /var/lib/libvirt/images/virnos.img
+    networks:
+      br0:
+        addr: 172.20.0.0
+        mask: 255.255.255.0
+        start: 172.20.0.10
+        end: 172.20.0.50
+      br1:
+        addr: 172.20.1.0
+        mask: 255.255.255.0
+        start: 172.20.1.10
+        end: 172.20.1.50
+      br2:
+        addr: 172.20.2.0
+        mask: 255.255.255.0
+        start: 172.20.2.10
+        end: 172.20.2.50
+  tasks:
+    # Install base resources, applications, docker, libvirt, etc.
+    - include_role:
+        name: base
+    - copy:
+        src: virnos.img
+        dest: "{{image_path}}"
+    - include_role:
+        name: kvm_virnos
+      vars:
+        vm_name: virnos
+

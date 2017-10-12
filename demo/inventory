@@ -1,0 +1,5 @@
+[irg]
+irg ansible_ssh_user=root
+[ucpe]
+sfo ansible_ssh_user=root
+bos ansible_ssh_user=root

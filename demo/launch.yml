@@ -35,7 +35,7 @@
     - name: create ucpe nodes
       os_server:
         state: present
-        name: "{{item}}"
+        name: "{{item.key}}"
         image: xenial
         key_name: "{{server_key}}"
         timeout: 600
@@ -47,27 +47,24 @@
           - net-name: "{{network_names[1]}}"
           - net-name: "{{network_names[2]}}"
         meta:
-          hostname: "{{item}}"
+          hostname: "{{item.key}}"
           group: ucpe
-      with_items:
-        - "{{ucpe_nodes}}"
+      with_dict: "{{ucpe_nodes}}"
 
     - name: associate floating_ip with ucpe nodes
       os_floating_ip:
-        server: "{{item}}"
+        server: "{{item.key}}"
         nat_destination: "{{network_names[0]}}"
         network: public
         state: present
         wait: yes
         timeout: 120
-      with_items:
-        - "{{ucpe_nodes}}"
+      with_dict: "{{ucpe_nodes}}"
 
-
-    - name: create ird node
+    - name: create ird nodes
       os_server:
         state: present
-        name: CDG
+        name: "{{item.key}}"
         image: xenial
         key_name: "{{server_key}}"
         timeout: 600
@@ -79,14 +76,17 @@
           - net-name: "{{network_names[1]}}"
           - net-name: "{{network_names[2]}}"
         meta:
-          hostname: CDG
-          group: ird
+          hostname: "{{item.key}}"
+          group: ucpe
+      with_dict: "{{ird_nodes}}"
 
-    - name: associate floating_ip with ird node
+    - name: associate floating_ip with ird nodes
       os_floating_ip:
-        server: CDG
+        server: "{{item.key}}"
         nat_destination: "{{network_names[0]}}"
         network: public
         state: present
         wait: yes
         timeout: 120
+      with_dict: "{{ird_nodes}}"
+

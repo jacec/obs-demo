@@ -1,0 +1,38 @@
+- name: install needed packages
+  apt:
+    name: unzip
+
+- name: get vgw image with password
+  get_url:
+    url: "{{image_url}}"
+    dest: "/var/lib/libvirt/images/{{instance_name}}.zip"
+    url_password: "{{image_pass}}"
+    url_username: "{{image_user}}"
+    mode: 644
+  register: vgw_image
+
+- name: extract vGW image
+  unarchive:
+    src: "/var/lib/libvirt/images/{{instance_name}}.zip"
+    remote_src: yes
+    dest: "/var/lib/libvirt/images/"
+    list_files: yes
+ 
+- find:
+    paths: /var/lib/libvirt/
+    pattern: '*.qcow2'
+    recurse: yes
+
+
+- name: define vgw instance
+  virt:
+    name: vgw
+    command: define
+    xml: "{{ lookup('template', 'xml.j2') }}"
+  register: vgw_define
+
+- name: launch vgw instance
+  virt:
+    name: vgw
+    state: running
+  when: vgw_define.changed

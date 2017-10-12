@@ -1,0 +1,67 @@
+<domain type="kvm">
+  <name>{{name}}</name>
+  <uuid>{{name|to_uuid}}</uuid>
+  <memory>8388608</memory>
+  <currentMemory>8388608</currentMemory>
+  <vcpu>4</vcpu>
+  <os>
+    <type arch="x86_64">hvm</type>
+    <boot dev="hd"/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode="custom" match="exact">
+    <model>SandyBridge</model>
+  </cpu>
+  <clock offset="utc">
+    <timer name="rtc" tickpolicy="catchup"/>
+    <timer name="pit" tickpolicy="delay"/>
+    <timer name="hpet" present="no"/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <pm>
+    <suspend-to-mem enabled="no"/>
+    <suspend-to-disk enabled="no"/>
+  </pm>
+  <devices>
+    <emulator>/usr/bin/kvm-spice</emulator>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2"/>
+      <source file="{{image_name.files[0].path}}"/>
+      <target dev="vda" bus="virtio"/>
+    </disk>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="raw"/>
+      <source file="/var/lib/libvirt/images/vgw-CD.iso"/>
+      <target dev="vdb" bus="virtio"/>
+    </disk>
+    <controller type="usb" index="0" model="ich9-ehci1"/>
+    <controller type="usb" index="0" model="ich9-uhci1">
+      <master startport="0"/>
+    </controller>
+    <controller type="usb" index="0" model="ich9-uhci2">
+      <master startport="2"/>
+    </controller>
+    <controller type="usb" index="0" model="ich9-uhci3">
+      <master startport="4"/>
+    </controller>
+{% for bridge in bridges_in %}
+    <interface type="bridge">
+      <source bridge="{{bridge}}"/>
+      <model type="virtio" />
+    </interface>
+{% endfor %}{% for bridge in bridges_out %}
+    <interface type="bridge">
+      <source bridge="{{bridge}}"/>
+      <model type="virtio" />
+    </interface>
+{% endfor %}
+    <input type="mouse" bus="ps2"/>
+    <graphics type="vnc" port="-1" passwd="river123"/>
+    <console type="pty"/>
+  </devices>
+</domain>

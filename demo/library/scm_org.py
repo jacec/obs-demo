@@ -8,28 +8,27 @@ def org_present(data):
     password = data['password']
     url = data['url']
     org = data['org']
-    org_id = None
+    org_id = ''
 
     payload = {
         "name": data['org'],
         "city": data['city'],
-        "longname": data['org'],
+        "longname": data['org_long'],
         "country": data['country'],
-        "timezone": data['tz'],
-        "sitelink_pool_v4": data['v4pool']
+        "timezone": data['tz']
         }
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['id']:
             org_id = n['id']
             has_changed = False
-        else:
-            o = requests.post(url+"orgs", auth=(user, password), json=payload).json()
-            org_id = o
-            has_changed = True
+    if org_id is '':
+        r = requests.post(url+"orgs", auth=(user, password), json=payload, verify=False).json()
+        org_id = r['id']
+        has_changed = True
 
-    meta = {"org_id": org_id, "payload": payload}
+    meta = {"payload": payload}
     return (has_changed, org_id, meta)
 
 def org_absent(data=None):
@@ -39,11 +38,11 @@ def org_absent(data=None):
     org = data['org']
     org_id = None
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['id']:
             org_id = n['id']
-            r = requests.delete(url+"org/"+org_id, auth=(user, password)).json()
+            r = requests.delete(url+"org/"+org_id, auth=(user, password), verify=False).json()
             has_changed = True
         else:
             r = "none"
@@ -54,9 +53,10 @@ def org_absent(data=None):
 def main():
     fields = {
         "user": {"required": True, "type": "str"},
-        "password": {"required": True, "type": "str"},
+        "password": {"required": True, "type": "str", "no_log": True},
         "url": {"required": True, "type": "str" },
         "org": {"required": True, "type": "str"},
+        "org_long": {"required": False, "type": "str", "default": "Organization Name"},
         "city": {"required": True, "type": "str"},
         "country": {"default": "US", "required": False, "type": "str"},
         "tz": {"default": "Americas/Los_Angeles", "required": False, "type": "str"},

@@ -1,0 +1,9 @@
+---
+- hosts: ucpe
+  become: true
+  become_user: root
+  tasks:
+    - set_fact:
+         node_name: "{{ansible_nodename|upper}}"
+    - include_role:
+        name: ubuntu_bridges

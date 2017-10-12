@@ -1,0 +1,3 @@
+  <cpu mode="custom" match="exact">
+    <model>SandyBridge</model>
+  </cpu>

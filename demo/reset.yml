@@ -6,7 +6,7 @@
     - name: delete ucpe nodes
       os_server:
         state: absent
-        name: "{{item}}"
+        name: "{{item.key}}"
         image: xenial
         key_name: "{{server_key}}"
         timeout: 600
@@ -17,15 +17,14 @@
           - net-name: "{{network_names[1]}}"
           - net-name: "{{network_names[2]}}"
         meta:
-          hostname: "{{item}}"
+          hostname: "{{item.key}}"
           group: ucpe
-      with_items:
-        - "{{ucpe_nodes}}"
+      with_dict: "{{ucpe_nodes}}"
 
-    - name: delete ird node
+    - name: delete ird nodes
       os_server:
         state: absent
-        name: CDG
+        name: "{{item.key}}"
         image: xenial
         key_name: "{{server_key}}"
         timeout: 600
@@ -36,8 +35,9 @@
           - net-name: "{{network_names[1]}}"
           - net-name: "{{network_names[2]}}"
         meta:
-          hostname: CDG
-          group: ird
+          hostname: "{{item.key}}"
+          group: ucpe
+      with_dict: "{{ird_nodes}}"
 
     - name: delete router
       os_router:
@@ -48,6 +48,7 @@
           - "{{network_names[0]}}"
           - "{{network_names[1]}}"
           - "{{network_names[2]}}"
+      ignore_errors: true
 
     - name: remove networks for broadband, dslvpn, sdslvpn
       os_network:
@@ -57,16 +58,26 @@
       with_items:
         - "{{network_names}}"
 
-    - name: remove nodes and images
+    - name: remove ucpe nodes and images
       scm_node:
         url: "{{scm_url}}"
         user: "admin"
         password: "pppp"
         org: "{{scm_org}}"
-        site: "{{item}}"
+        site: "{{item.key}}"
         state: "absent"
-      with_items:
-        - "{{scm_names}}"
+      with_dict: "{{ucpe_nodes}}"
+      ignore_errors: true
+
+    - name: remove ird nodes and images
+      scm_node:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        site: "{{item.key}}"
+        state: "absent"
+      with_dict: "{{ird_nodes}}"
       ignore_errors: true
 
     - name: remove org
@@ -75,6 +86,6 @@
         user: "admin"
         password: "pppp"
         org: "{{scm_org}}"
-        city: "{{scm_cities[0]}}"
+        city: "none"
         state: "absent"
       ignore_errors: true

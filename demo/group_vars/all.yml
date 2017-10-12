@@ -1,13 +1,120 @@
-ansible_ssh_user: ubuntu
-github_user: rstarmer
-network_names: [broadband, dslvpn, sdslvpn]
-network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
-ucpe_nodes: [LHR,MIL]
-server_key: kumul
-scm_org: FIAT
-scm_url: https://sdpdemo.riverbed.cc/api/scm.config/1.0/
-scm_cities: ["Paris","London","Milan"]
-scm_names: ["CDG","LHR","MIL"]
-mac_addr_1: DE:AD:BE:EF:49:41
-mac_addr_2: DE:AD:BE:EF:AC:04
-mac_addr_3: DE:AD:BE:EF:28:7B
+os_github_user: rstarmer
+os_network_names: [broadband, dslvpn, sdslvpn]
+os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
+os_server_key: irg
+prov_scm_org: RENAULT
+prov_scm_org_long: Renault Motorcars, Inc.
+prov_scm_city: Paris
+prov_scm_country: FR
+prov_scm_tz: Europe/Berlin
+prov_scm_url: https://sdpdemo.riverbed.cc/api/scm.config/1.0/
+prov_scm_names: ["IRD","SFO","BOS"]
+ird_nodes:
+  IRD:
+    city: Boston
+    country: US
+    tz: America/New_York
+    interfaces: 
+      - enp11s0
+      - enp9s0f0
+      - enp9s0f1
+      - enp9s0f3
+      - enp9s0f3
+    bridges:
+      - broadband
+      - adslvpn
+      - sdslvpn
+      - ird0
+      - ird1
+      - ird2
+      - ird3
+      - ird4
+      - ird5
+    tenvgw:
+      wan:
+        - tenbroadband
+        - tenadslvpn
+      lan:
+        - tenremote
+    pvgw:
+      wan:
+        - broadband
+        - broadband
+        - adslvpn
+      lan:
+        - tenbroadband
+        - tenadslvpn
+        - mgmt
+ucpe_nodes:
+  SFO:
+    city: San Francisco
+    country: US
+    tz: America/Los_Angeles
+    interfaces:
+      - eth1
+      - eth2
+      - eth3
+    bridges:
+      - broadband
+      - adslvpn
+      - tenremote 
+      - tenbroadband
+      - tenadslvpn
+      - mgmt
+    tenvgw:
+      wan:
+        - tenbroadband
+        - tenadslvpn
+      lan:
+        - tenremote
+    pvgw:
+      wan:
+        - broadband
+        - broadband
+        - adslvpn
+      lan:
+        - tenbroadband
+        - tenadslvpn
+        - mgmt
+  BOS:
+    city: Boston
+    country: US
+    tz: America/New_York
+    interfaces:
+      - eth2
+      - eth3
+    bridges:
+      broadband:
+              interface: eth1
+              dhcp: false
+      adslvpn:
+              interface: eth2
+              dhcp: false
+      tenremote:
+              interface: eth3
+              dhcp: false
+      tenbroadband:
+              interface: false
+              dhcp: false
+      tenadslvpn:
+              interface: false
+              dhcp: false
+      mgmt:
+              interface: false
+              dhcp: false
+    tenvgw:
+      wan:
+        - tenbroadband
+        - tenadslvpn
+      lan:
+        - tenremote
+    pvgw:
+      wan:
+        - broadband
+        - broadband
+        - adslvpn
+      lan:
+        - tenbroadband
+        - tenadslvpn
+        - mgmt
+

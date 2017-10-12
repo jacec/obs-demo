@@ -1,0 +1,11 @@
+<network>
+  <name>{{item.key}}</name>
+  <uuid>{{item.key|to_uuid}}</uuid>
+  <bridge name='{{item.key}}' stp='on' delay='0' macTableManager='libvirt'/>
+  <forward mode='nat' />
+  <ip address='{{item.value.addr}}' netmask='{{item.value.mask}}'>
+    <dhcp>
+      <range start='{{item.value.start}}' end='{{item.value.end}}'/>
+    </dhcp>
+  </ip>
+</network>

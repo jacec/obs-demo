@@ -13,7 +13,7 @@ def rules_present(data):
     org_id = ''
     network_segments = []
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -21,7 +21,7 @@ def rules_present(data):
     if org_id == '':
         return(False,True,{"meta": "No such org:"+org})
 
-    r = requests.get(url+"org/"+org_id+"/networks", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/networks", auth=(user, password), verify=False).json()
     for n in r['items']:
         if not n['zone'] is None:
             network_segments.append(n['zone'])
@@ -37,13 +37,13 @@ def rules_present(data):
         "allow": "1"
         }
 
-    r = requests.get(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password), verify=False).json()
     for n in r['items']:
         if 'segments' in n['srctype']:
-            o = requests.put(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password), json=payload).json()
-            return (True, False, {"network_segments updated": network_segments, "response": o})
+            o = requests.put(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password), json=payload, verify=False).json()
+            return (True, False, {"network_segments updated": network_segments, "response": o, "payload": payload})
         else:
-            o = requests.post(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password), json=payload).json()
+            o = requests.post(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password), json=payload, verify=False).json()
             return (True, False, {"network_segments created": network_segments, "response": o, "payload": payload})
 
 def rules_absent(data=None):
@@ -55,7 +55,7 @@ def rules_absent(data=None):
     org_id = ''
     rule_id = ''
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -63,11 +63,11 @@ def rules_absent(data=None):
     if org_id == '':
         return(False,True,{"meta": "No such org:"+org})
 
-    r = requests.get(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/"+direction+"_rules", auth=(user, password), verify=False).json()
     for n in r['items']:
         if 'segments' in n['srctype']:
             rule_id = n['id']
-            r = requests.delete(url+"/"+direction+"_rules/"+rule_id, auth=(user, password))
+            r = requests.delete(url+"/"+direction+"_rules/"+rule_id, auth=(user, password), verify=False)
             return(True,False,{"meta": "Removed rule: "+rule_id})
     if rule_id == '':
         return(False,True,{"meta": "No such rule"})
@@ -75,7 +75,7 @@ def rules_absent(data=None):
 def main():
     fields = {
         "user": {"required": True, "type": "str"},
-        "password": {"required": True, "type": "str"},
+        "password": {"required": True, "type": "str", "no_log": True},
         "url": {"required": True, "type": "str" },
         "org": {"required": True, "type": "str"},
         "direction": {"required": False, "type": "str", "default": "outbound"},

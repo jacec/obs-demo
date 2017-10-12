@@ -12,6 +12,7 @@
   lineinfile:
     line: 'APT::Periodic::Enable "0";'
     dest: /etc/apt/apt.conf.d/10periodic
+    create: yes
 
 - name: Pass options to dpkg on run
   become: true
@@ -41,6 +42,7 @@
    - qemu-kvm
    - libvirt-bin
    - cloud-image-utils
+   - unzip
 
 - name: add dockerproject APT key
   become: true

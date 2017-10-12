@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  gather_facts: False
   connection: local
   tasks:
     - include_role:
@@ -16,6 +17,15 @@
     # Create ucpe specific networks, SCM VPN endpoint, etc.
     - include_role:
         name: ucpe
+    - include_role:
+        name: scm_site
+      vars:
+        city: "{{item.value.city}}"
+        site: "{{item.key}}"
+        tz: "{{item.value.tz}}"
+        country: "{{item.value.country}}"
+      with_dict: "{{sites}}"
+        
     - name: register ucpe vGW image path
       scm_image:
         url: "{{scm_url}}"
@@ -25,12 +35,15 @@
         site: "{{ansible_nodename|upper}}"
         state: "present"
       register: image_info
-    - name: get vGW image
-      get_url:
-        dest: /var/lib/libvirt/images/
-        url: "{{image_info.image}}"
-        url_username: "admin"
-        url_password: "pppp"
+
+    - include_role:
+        name: kvm_vgw
+      vars:
+        instance_name: vgw
+        image_user: admin
+        image_pass: pppp
+        image_url: "{{image_info.image}}"
+        image_type: qcow2
 
 
 - hosts: ird
@@ -51,23 +64,36 @@
         site: "{{ansible_nodename|upper}}"
         state: "present"
       register: image_info
+
     - include_role:
-        name: kvm_cloud
+        name: kvm_vgw
       vars:
-        instance_name: vgw
+        instance_name: tenvgw
+        image_user: admin
+        image_pass: pppp
         image_url: "{{image_info.image}}"
         image_type: qcow2
 
     - include_role:
-        name: kvm_cloud
+        name: kvm_vgw
       vars:
-        instance_name: provider_scm
-        image_url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+        instance_name: provvgw
+        image_user: admin
+        image_pass: pppp
+        image_url: "{{image_info.image}}"
         image_type: qcow2
 
     - include_role:
-        name: kvm_cloud
+        name: kvm_vgw
       vars:
-        instance_name: vgw
+        instance_name: provtenintvgw
+        image_user: admin
+        image_pass: pppp
         image_url: "{{image_info.image}}"
         image_type: qcow2
+
+    - include_role:
+        name: kvm_virnos
+      vars:
+        vm_name: irg
+        

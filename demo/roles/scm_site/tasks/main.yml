@@ -1,0 +1,32 @@
+- name: create sites
+  scm_site:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    city: "{{city}}"
+    site: "{{site}}"
+    country: "{{country}}"
+    state: "present"
+  register: scm_site_out
+
+- debug:
+    var: scm_site_out
+
+- name: register nodes and images
+  scm_node:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    site: "{{site}}"
+    state: "present"
+
+- name: create outbound rule
+  scm_rules:
+    url: "{{scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{scm_org}}"
+    direction: "outbound"
+    state: "present"
