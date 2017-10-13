@@ -1,15 +1,208 @@
-ansible_ssh_user: ubuntu
-github_user: rstarmer
-network_names: [broadband, dslvpn, sdslvpn]
-network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
-ucpe_nodes: [LHR,MIL]
-server_key: kumulus
-scm_org: FIAT
-scm_url: https://sdpdemo.riverbed.cc/api/scm.config/1.0/
-scm_cities: ["Paris","London","Milan"]
-scm_names: ["CDG","LHR","MIL"]
-interfaces: [ens3,ens4,ens5]
-interfaces_o: [ens6,ens7,ens8]
-bridges_in: [br3,br4,br5]
-bridges_out: [br3o,br4o,br5o]
-
+os_github_user: rstarmer
+os_network_names: [broadband, adslvpn, sdslvpn]
+os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
+os_server_key: irg
+prov_scm_org: LOREAL
+prov_scm_org_long: Loreal Inc.
+prov_scm_city: Paris
+prov_scm_country: FR
+prov_scm_tz: Europe/Berlin
+prov_scm_url: https://proscm.rvbdemo.com/api/scm.config/1.0/
+prov_scm_names: ["IRG","PIRG","SFO","BOS"]
+ten_scm_org: LOREAL
+ten_scm_org_long: Loreal Inc.
+ten_scm_city: Paris
+ten_scm_country: FR 
+ten_scm_tz: Europe/Berlin
+ten_scm_url: https://tenscm.rvbdemo.com/api/scm.config/1.0/
+ten_scm_names: ["IRG","PIRG","SFO","BOS"]
+nodes:
+  IRG:
+    city: Boston
+    country: US
+    tz: America/New_York
+    interfaces:
+      - enp11s0
+      - enp9s0f0
+      - enp9s0f1
+      - enp9s0f2
+      - enp9s0f3
+    bridges:
+      broadband:
+              interface: enp11s0
+              dhcp: false
+      adslvpn:
+              interface: enp9s0f0
+              dhcp: false
+      sdslvpn:
+              interface: enp9s0f1
+              dhcp: false
+      tmpls:
+              interface: enp9s0f2
+              dhcp: false
+      pmpls:
+              interface: enp9s0f3
+              dhcp: false
+      pvgwirg0:
+              interface: false
+              dhcp: true
+              ip: 172.31.254.0/24
+      tvgw0:
+              interface: false
+              dhcp: true
+      tvgw1:
+              interface: false
+              dhcp: true
+      tvgw2:
+              interface: false
+              dhcp: true
+      tvgw0irg1:
+              interface: false
+              dhcp: true
+      tvgw1irg2:
+              interface: false
+              dhcp: true
+      tvgw2irg3:
+              interface: false
+              dhcp: true
+    vgws:
+      tenvgw2:
+        wan:
+          - tenvgw2
+          - irg5
+          - broadband
+      tenvgw1:
+        wan:
+          - tenvgw1
+          - irg4
+          - adslvpn
+          - sdslvpn
+      tenvgw0:
+        wan:
+          - tenvgw0
+          - irg3
+          - broadband
+          - adslvpn
+          - sdslvpn
+    pvgws:
+      pvgw:
+        wan:
+          - irg0
+        lan:
+          - tenvgw0
+          - tenvgw1
+          - tenvgw2
+  PIRG:
+    city: Boston
+    country: US
+    tz: America/New_York
+    interfaces: 
+      - enp0s20f1
+      - enp0s20f2
+      - enp0s20f3
+    bridges:
+      broadband:
+              interface: enp0s20f1
+              dhcp: false
+      adslvpn:
+              interface: enp0s20f2
+              dhcp: false
+      tmpls:
+              interface: enp0s20f3
+              dhcp: false
+      pgwirg0:
+              interface: false
+              dhcp: true
+              ip: 172.31.254.0/24
+    pvgws:
+      pvgw:
+        wan:
+          - pgwirg0
+          - broadband
+          - adslvpn
+  SFO:
+    city: San Francisco
+    country: US
+    tz: America/Los_Angeles
+    interfaces:
+      - eth2
+      - eth3
+    bridges:
+      broadband:
+              interface: eth1
+              dhcp: false
+      adslvpn:
+              interface: eth2
+              dhcp: false
+      tenremote:
+              interface: eth3
+              dhcp: false
+      tenbroadband:
+              interface: false
+              dhcp: false
+      tenadslvpn:
+              interface: false
+              dhcp: false
+      mgmt:
+              interface: false
+              dhcp: false
+    tenvgws:
+      tenvgw:
+        wan:
+          - tenbroadband
+          - tenadslvpn
+        lan:
+          - tenremote
+    pvgws:
+      pvgw:
+        wan:
+          - broadband
+          - broadband
+          - adslvpn
+        lan:
+          - tenbroadband
+          - tenadslvpn
+          - mgmt
+  BOS:
+    city: Boston
+    country: US
+    tz: America/New_York
+    interfaces:
+      - eth2
+      - eth3
+    bridges:
+      broadband:
+              interface: eth1
+              dhcp: false
+      adslvpn:
+              interface: eth2
+              dhcp: false
+      tenremote:
+              interface: eth3
+              dhcp: false
+      tenbroadband:
+              interface: false
+              dhcp: false
+      tenadslvpn:
+              interface: false
+              dhcp: false
+      mgmt:
+              interface: false
+              dhcp: false
+    tvgws:
+      tenvgw:
+        wan:
+          - tenbroadband
+          - tenadslvpn
+        lan:
+          - tenremote
+    pvgws:
+      pvgw:
+        wan:
+          - broadband
+          - broadband
+          - adslvpn
+        lan:
+          - tenbroadband
+          - tenadslvpn
+          - mgmt

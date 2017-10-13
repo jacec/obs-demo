@@ -16,7 +16,7 @@ def image_present(data):
     image_id = ''
     timer=0
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -24,7 +24,7 @@ def image_present(data):
     if org_id == '':
         return(False,True,{"meta": "No such org:"+org})
 
-    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password), verify=False).json()
     for n in r['items']:
         if site in n['name']:
             site_id = n['id']
@@ -32,20 +32,20 @@ def image_present(data):
     if site_id == '':
         return(False,True,{"meta": "No such site:"+site})
 
-    r = requests.get(url+"org/"+org_id+"/nodes", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/nodes", auth=(user, password), verify=False).json()
     for n in r['items']:
         if n['site'] is None:
-            o = requests.delete(url+"node/"+n['id'], auth=(user, password))
+            o = requests.delete(url+"node/"+n['id'], auth=(user, password), verify=False)
         elif site_id in n['site']:
             node_id = n['id']
 
     payload = {"type": data['type']}
-    r = requests.post(url+"node/"+node_id+"/prepare_image", auth=(user, password), json=payload).json()
+    r = requests.post(url+"node/"+node_id+"/prepare_image", auth=(user, password), json=payload, verify=False).json()
 
     while True:
-        r = requests.get(url+"node/"+node_id+"/image_status", auth=(user, password))
+        r = requests.get(url+"node/"+node_id+"/image_status", auth=(user, password), verify=False)
         if r.status_code == requests.codes.ok:
-            r = requests.get(url+"node/"+node_id+"/image_status", auth=(user, password)).json()
+            r = requests.get(url+"node/"+node_id+"/image_status", auth=(user, password), verify=False).json()
             return (True, False, url+"node/"+node_id+"/get_image?file="+r['image_file'])
         time.sleep(1)
         timer += 1

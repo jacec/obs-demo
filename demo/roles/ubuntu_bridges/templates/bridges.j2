@@ -1,0 +1,19 @@
+{% for key,value in nodes[node_name].bridges.iteritems() %}
+{% if value.interface %}
+auto {{value.interface}}
+iface {{value.interface}} inet manual
+  address 0.0.0.0
+{% endif %}
+auto {{key}}
+iface {{key}} inet static
+    address 0.0.0.0
+    bridge_stp off
+{% if value.interface -%}
+    bridge_ports {{value.interface}}
+{%- endif %}
+    bridge_fd 0
+    bridge_maxwait 0
+    pre-up    brctl addbr {{key}}
+    post-down brctl delbr {{key}}
+
+{% endfor %}

@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  gather_facts: False
+  connection: local
+  tasks:
+    - include_role:
+        name: scm
+

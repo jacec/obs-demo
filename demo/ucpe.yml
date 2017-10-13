@@ -9,17 +9,28 @@
     # Create ucpe specific networks, SCM VPN endpoint, etc.
     - include_role:
         name: ucpe
-    - name: register ucpe vGW image path
+    - name: register ucpe pvGW image path
       scm_image:
-        url: "{{scm_url}}"
+        url: "{{prov_scm_url}}"
         user: "admin"
         password: "pppp"
-        org: "{{scm_org}}"
+        org: "{{prov_scm_org}}"
         site: "{{ansible_nodename|upper}}"
         state: "present"
-      register: image_info
+      register: prov_image_info
+    - name: register ucpe tvGW image path
+      scm_image:
+        url: "{{ten_scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{ten_scm_org}}"
+        site: "{{ansible_nodename|upper}}"
+        state: "present"
+      register: ten_image_info
     - include_role:
-        name: kvm_cloud
+        name: kvm_bridge
+    - include_role:
+        name: kvm_vgw
       vars:
         instance_name: vgw
         image_url: "{{image_info.image}}"

@@ -22,6 +22,7 @@
     paths: /var/lib/libvirt/
     pattern: '*.qcow2'
     recurse: yes
+<<<<<<< HEAD
   register: image_name
 
 - debug: var=image_name
@@ -50,29 +51,15 @@
     creates: /var/lib/libvirt/images/{{instance_name}}-CI.iso
     chdir: /root/{{instance_name}}/
 
-- name: create vgw xml
-  template:
-    dest: /root/vwg.xml
-    src: templates/xml.j2
-
 - name: define vgw instance
   virt:
     name: vgw
     command: define
     xml: "{{ lookup('template', 'xml.j2') }}"
+  register: vgw_define
 
 - name: launch vgw instance
   virt:
     name: vgw
     state: running
-
-#- name: launch kvm for "{{instance_name}}"
-#  command: |
-#    kvm -m 8192 \
-#    -smp 4 \
-#    -cdrom "/var/lib/libvirt/images/{{instance_name}}-CD.iso" \
-#    -device e1000,netdev=br3,mac="{{mac_1.mac}}" -netdev tap,id=br3,script=/etc/qemu-ifup \
-#    -device e1000,netdev=br4,mac="{{mac_2.mac}}" -netdev tap,id=br4,script=/etc/qemu-ifup \
-#    -device e1000,netdev=br5,mac="{{mac_3.mac}}" -netdev tap,id=br5,script=/etc/qemu-ifup \
-#    -drive file={{image_name.files[0].path}},if=virtio,cache=writeback,index=0 \
-#    -vnc 0.0.0.0:5900
+  when: vgw_define.changed

@@ -1,11 +1,12 @@
 ---
 - hosts: localhost
+  gather_facts: False
   connection: local
   tasks:
     - include_role:
         name: scm
 
-- hosts: ucpe
+- hosts: all
   gather_facts: False
   become: true
   become_user: root
@@ -15,17 +16,42 @@
         name: base
     # Create ucpe specific networks, SCM VPN endpoint, etc.
     - include_role:
+        name: irg
+      when: 'irg' in group_names
+    - include_role:
         name: ucpe
-    - name: register ucpe vGW image path
-      scm_image:
-        url: "{{scm_url}}"
-        user: "admin"
-        password: "pppp"
-        org: "{{scm_org}}"
-        site: "{{ansible_nodename|upper}}"
-        state: "present"
-      register: image_info
-
+      when: 'ucpe' in group_names
+# register provider sites
+    - include_role:
+        name: scm_site
+      vars:
+        scm_url: "{{prov_scm_url}}"
+        city: "{{item.value.city}}"
+        site: "{{item.key}}"
+        tz: "{{item.value.tz}}"
+        country: "{{item.value.country}}"
+      with_dict: "{{prov_sites}}"
+# register tenant sites
+    - include_role:
+        name: scm_site
+      vars:
+        scm_url: "{{ten_scm_url}}"
+        city: "{{item.value.city}}"
+        site: "{{item.key}}"
+        tz: "{{item.value.tz}}"
+        country: "{{item.value.country}}"
+      with_dict: "{{ten_sites}}"
+        
+#    - name: register ucpe vGW image path
+#      scm_image:
+#        url: "{{scm_url}}"
+#        user: "admin"
+#        password: "pppp"
+#        org: "{{scm_org}}"
+#        site: "{{ansible_nodename|upper}}"
+#        state: "present"
+#      register: image_info
+#
 #    - include_role:
 #        name: kvm_vgw
 #      vars:
@@ -35,38 +61,3 @@
 #        image_url: "{{image_info.image}}"
 #        image_type: qcow2
 
-
-- hosts: ird
-  become: true
-  become_user: root
-  gather_facts: False
-  tasks:
-    - include_role:
-        name: base
-    - include_role:
-        name: ird
-    - name: register ird vGW image path
-      scm_image:
-        url: "{{scm_url}}"
-        user: "admin"
-        password: "pppp"
-        org: "{{scm_org}}"
-        site: "{{ansible_nodename|upper}}"
-        state: "present"
-      register: image_info
-
-    - include_role:
-        name: kvm_vgw
-      vars:
-        instance_name: vgw
-        image_user: admin
-        image_pass: pppp
-        image_url: "{{image_info.image}}"
-        image_type: qcow2
-
-#    - include_role:
-#        name: kvm_vgw
-#      vars:
-#        instance_name: provider_scm
-#        image_url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
-#        image_type: qcow2

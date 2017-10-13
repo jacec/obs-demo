@@ -1,0 +1,15 @@
+- name: ensure interfaces.d is sourced in newtork file
+  lineinfile:
+    regexp: ^source /etc/network/interfaces.d/*
+    line: source /etc/network/interfaces.d/*
+    dest: /etc/network/interfaces
+- name: install interface templates
+  template:
+    src: templates/bridges.j2
+    dest: /etc/network/interfaces.d/bridges.cfg
+
+- name: restart networking
+  service:
+    name: networking
+    state: restarted
+

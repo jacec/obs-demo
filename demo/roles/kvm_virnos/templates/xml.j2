@@ -1,6 +1,6 @@
 <domain type="kvm">
-  <name>{{name}}</name>
-  <uuid>{{name|to_uuid}}</uuid>
+  <name>{{vm_name}}</name>
+  <uuid>{{vm_name|to_uuid}}</uuid>
   <memory>8388608</memory>
   <currentMemory>8388608</currentMemory>
   <vcpu>4</vcpu>
@@ -30,14 +30,9 @@
   <devices>
     <emulator>/usr/bin/kvm-spice</emulator>
     <disk type="file" device="disk">
-      <driver name="qemu" type="qcow2"/>
-      <source file="{{image_name.files[0].path}}"/>
-      <target dev="vda" bus="virtio"/>
-    </disk>
-    <disk type="file" device="disk">
       <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/vgw-CD.iso"/>
-      <target dev="vdb" bus="virtio"/>
+      <source file="{{image_path}}"/>
+      <target dev="vda" bus="virtio"/>
     </disk>
     <controller type="usb" index="0" model="ich9-ehci1"/>
     <controller type="usb" index="0" model="ich9-uhci1">
@@ -49,14 +44,9 @@
     <controller type="usb" index="0" model="ich9-uhci3">
       <master startport="4"/>
     </controller>
-{% for bridge in bridges_in %}
+{% for key,value in networks.iteritems() %}
     <interface type="bridge">
-      <source bridge="{{bridge}}"/>
-      <model type="e1000" />
-    </interface>
-{% endfor %}{% for bridge in bridges_out %}
-    <interface type="bridge">
-      <source bridge="{{bridge}}"/>
+      <source bridge="{{key}}"/>
       <model type="e1000" />
     </interface>
 {% endfor %}

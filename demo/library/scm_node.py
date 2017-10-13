@@ -14,7 +14,7 @@ def node_present(data):
     site_id = ''
     node_id = ''
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -22,7 +22,7 @@ def node_present(data):
     if org_id == '':
         return(False,True,{"meta": "No such org:"+org})
 
-    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password), verify=False).json()
     for n in r['items']:
         if site in n['name']:
             site_id = n['id']
@@ -30,10 +30,10 @@ def node_present(data):
     if site_id == '':
         return(False,True,{"meta": "No such site:"+site})
 
-    r = requests.get(url+"org/"+org_id+"/nodes", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/nodes", auth=(user, password), verify=False).json()
     for n in r['items']:
         if n['site'] is None:
-            o = requests.delete(url+"node/"+n['id'], auth=(user, password))
+            o = requests.delete(url+"node/"+n['id'], auth=(user, password), verify=False)
         elif site_id in n['site']:
             node_id = n['id']
             return (False, False, {"node_id": n['id']})
@@ -42,7 +42,7 @@ def node_present(data):
         "model": data['model'],
         "site": site_id
         }
-    r = requests.post(url+"org/"+org_id+"/node/virtual/register", auth=(user, password), json=payload).json()
+    r = requests.post(url+"org/"+org_id+"/node/virtual/register", auth=(user, password), json=payload, verify=False).json()
     node_id=r['id']
     return (True, False, {"node_id": r['id']})
 
@@ -56,7 +56,7 @@ def node_absent(data=None):
     site_id = ''
     node_id = ''
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -64,19 +64,19 @@ def node_absent(data=None):
     if org_id == '':
         return(False,True,{"meta": "No such org:"+org})
 
-    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password), verify=False).json()
     for n in r['items']:
         if site in n['id']:
             site_id = n['id']
-            r = requests.delete(url+"site/"+site_id, auth=(user, password))
+            r = requests.delete(url+"site/"+site_id, auth=(user, password), verify=False)
 
     if site_id == '':
         return(False,True,{"meta": "No such site:"+site})
 
-    r = requests.get(url+"org/"+org_id+"/nodes", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/nodes", auth=(user, password), verify=False).json()
     for n in r['items']:
         if (n['site'] is None) or (site_id in n['site']):
-            o = requests.delete(url+"node/"+n['id'], auth=(user, password))
+            o = requests.delete(url+"node/"+n['id'], auth=(user, password), verify=False)
             return(True,False,{"meta": "Removed node:"+n['id']})
 
 def main():

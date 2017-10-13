@@ -1,0 +1,19 @@
+[irgs]
+irg ansible_ssh_user=root
+pirg ansible_ssh_user=root
+[ucpe]
+sfo ansible_ssh_user=root
+bos ansible_ssh_user=root
+[network]
+mpls ansible_ssh_user=root
+[pvgw]
+irg
+pirg
+sfo
+bos
+[t0vgw]
+irg
+bos
+[t1vgw]
+irg
+sfo

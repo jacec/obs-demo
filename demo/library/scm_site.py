@@ -20,7 +20,7 @@ def site_present(data):
 
     org_id = ''
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -28,12 +28,12 @@ def site_present(data):
     if org_id == '':
         return(False,True,r)
 
-    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password), verify=False).json()
     for n in r['items']:
         if data['site'] in n['name']:
             return(False,False,{"site_id": n['id']})
     else:
-        r = requests.post(url+"org/"+org_id+"/sites", auth=(user, password), json=payload).json()
+        r = requests.post(url+"org/"+org_id+"/sites", auth=(user, password), json=payload, verify=False).json()
         return (True, False, {"site_id": r['id']})
 
 def site_absent(data=None):
@@ -45,7 +45,7 @@ def site_absent(data=None):
     org_id = ''
     site_id = ''
 
-    r = requests.get(url+"orgs", auth=(user, password)).json()
+    r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
     for n in r['items']:
         if org in n['name']:
             org_id = n['id']
@@ -53,11 +53,11 @@ def site_absent(data=None):
     if org_id == '':
         return(False,True,r)
 
-    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password)).json()
+    r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password), verify=False).json()
     for n in r['items']:
         if site in n['id']:
             site_id = n['id']
-            r = requests.delete(url+"site/"+site_id, auth=(user, password))
+            r = requests.delete(url+"site/"+site_id, auth=(user, password), verify=False)
 
     if site_id == '':
         return(False,False,{"site": "non-existent"})

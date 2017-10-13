@@ -1,0 +1,28 @@
+---
+- name: define vgw network
+  virt_net:
+    name: "{{item.key}}"
+    command: define 
+    xml: "{{ lookup('template','net.j2') }}"
+  with_dict: "{{networks}}"
+  register: net_define
+
+- name: start networks
+  virt_net:
+    name: "{{item.key}}"
+    command: create
+  with_dict: "{{networks}}"
+  when: net_define.changed
+
+- name: define vgw instance
+  virt:
+    name: "{{vm_name}}"
+    command: define
+    xml: "{{ lookup('template', 'xml.j2') }}"
+  register: vgw_define
+
+- name: launch vgw instance
+  virt:
+    name: "{{vm_name}}"
+    state: running
+  when: vgw_define.changed

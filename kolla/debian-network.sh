@@ -93,7 +93,9 @@ if [ ! -f /etc/kolla/config/nova/nova-compute.conf ]; then
 mkdir -p /etc/kolla/config/nova/
 tee > /etc/kolla/config/nova/nova-compute.conf <<-EOF
 [libvirt]
-cpu_mode=host-passthrough
+#cpu_mode=host-passthrough
+cpu_mode = custom
+cpu_model = SandyBridge
 EOF
 fi
 fi

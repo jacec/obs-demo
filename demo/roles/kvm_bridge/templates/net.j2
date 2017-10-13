@@ -1,0 +1,16 @@
+{% for each key,value in nodes.[ansible_hostname|to_upper].bridges.iteritems() %}
+<network>
+  <name>{{item.key}}</name>
+  <uuid>{{item.key|to_uuid}}</uuid>
+  
+  <bridge name='{{item.key}}' stp='on' delay='0' macTableManager='libvirt'/>
+  <forward mode='bridge'>
+  {% if item.value.dhcp -%}
+  <ip address='{{item.value.addr}}' netmask='{{item.value.mask}}'>
+    <dhcp>
+      <range start='{{item.value.start}}' end='{{item.value.end}}'/>
+    </dhcp>
+  </ip>
+  {%- endif %}
+</network>
+{% endfor %}

@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+
+    - name: remove nodes and images
+      scm_node:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        site: "{{item.value.site}}"
+        state: "absent"
+      with_dict: "{{ucpe_names}}"
+      ignore_errors: true
+
+    - name: remove ird node and image
+      scm_node:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        site: "{{item.value.site}}"
+        state: "absent"
+      with_dict: "{{ird_names}}"
+      ignore_errors: true
+
+    - name: remove org
+      scm_org:
+        url: "{{scm_url}}"
+        user: "admin"
+        password: "pppp"
+        org: "{{scm_org}}"
+        city: "none"
+        state: "absent"
+      ignore_errors: true
