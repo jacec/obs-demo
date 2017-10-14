@@ -1,7 +1,9 @@
 os_github_user: rstarmer
-os_network_names: [broadband, adslvpn, sdslvpn]
-os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24]
+os_network_names: [broadband, adslvpn, sdslvpn, tenmpls, prompls ]
+os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24, 192.168.40.0/24, 192.168.50.0/24]
 os_server_key: irg
+os_ucpe_nodes: ["SFO","BOS"]
+os_irg_nodes: ["IRG","PIRG"]
 prov_scm_org: LOREAL
 prov_scm_org_long: Loreal Inc.
 prov_scm_city: Paris

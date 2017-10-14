@@ -1,0 +1,3 @@
+ansible-playbook -i inventory bridges.yml
+ansible-playbook -i inventory stage.yml
+ansible-playbook -i inventory nodes.yml

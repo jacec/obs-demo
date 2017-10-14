@@ -9,7 +9,7 @@
         name: "{{item}}"
         external: false
       with_items:
-        - "{{network_names}}"
+        - "{{os_network_names}}"
 
     - name: create subnets for broadband, dslvpn, sdslvpn
       os_subnet:
@@ -21,8 +21,8 @@
            - 8.8.4.4
            - 8.8.8.8
       with_together:
-        - "{{network_names}}"
-        - "{{network_cidrs}}"
+        - "{{os_network_names}}"
+        - "{{os_network_cidrs}}"
 
     - name: create/update router
       os_router:
@@ -30,63 +30,65 @@
         name: obs-router
         network: public
         interfaces:
-          - "{{network_names[0]}}"
+          - "{{os_network_names[0]}}"
 
     - name: create ucpe nodes
       os_server:
         state: present
-        name: "{{item.key}}"
+        name: "{{item}}"
         image: xenial
-        key_name: "{{server_key}}"
+        key_name: "{{os_server_key}}"
         timeout: 600
         flavor: 10
         auto_ip: no
         userdata: "{{ lookup('file', 'user-data.txt') }}"
         nics:
-          - net-name: "{{network_names[0]}}"
-          - net-name: "{{network_names[1]}}"
-          - net-name: "{{network_names[2]}}"
+          - net-name: "{{os_network_names[0]}}"
+          - net-name: "{{os_network_names[1]}}"
+          - net-name: "{{os_network_names[2]}}"
         meta:
-          hostname: "{{item.key}}"
+          hostname: "{{item}}"
           group: ucpe
-      with_dict: "{{ucpe_nodes}}"
+      with_items: "{{os_ucpe_nodes}}"
 
     - name: associate floating_ip with ucpe nodes
       os_floating_ip:
-        server: "{{item.key}}"
-        nat_destination: "{{network_names[0]}}"
+        server: "{{item}}"
+        nat_destination: "{{os_network_names[0]}}"
         network: public
         state: present
         wait: yes
         timeout: 120
-      with_dict: "{{ucpe_nodes}}"
+      with_items: "{{os_ucpe_nodes}}"
 
-    - name: create ird nodes
+    - name: create irg nodes
       os_server:
         state: present
-        name: "{{item.key}}"
+        name: "{{item}}"
         image: xenial
-        key_name: "{{server_key}}"
+        key_name: "{{os_server_key}}"
         timeout: 600
         flavor: 10
         auto_ip: no
         userdata: "{{ lookup('file', 'user-data.txt') }}"
         nics:
-          - net-name: "{{network_names[0]}}"
-          - net-name: "{{network_names[1]}}"
-          - net-name: "{{network_names[2]}}"
+          - net-name: "{{os_network_names[0]}}"
+          - net-name: "{{os_network_names[1]}}"
+          - net-name: "{{os_network_names[2]}}"
+          - net-name: "{{os_network_names[3]}}"
+          - net-name: "{{os_network_names[4]}}"
         meta:
-          hostname: "{{item.key}}"
+          hostname: "{{item}}"
           group: ucpe
-      with_dict: "{{ird_nodes}}"
+      with_items: "{{os_irg_nodes}}"
 
-    - name: associate floating_ip with ird nodes
+    - name: associate floating_ip with irg nodes
       os_floating_ip:
-        server: "{{item.key}}"
-        nat_destination: "{{network_names[0]}}"
+        server: "{{item}}"
+        nat_destination: "{{os_network_names[0]}}"
         network: public
         state: present
         wait: yes
         timeout: 120
-      with_dict: "{{ird_nodes}}"
+      with_items: "{{os_irg_nodes}}"
 
