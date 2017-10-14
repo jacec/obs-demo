@@ -1,8 +1,8 @@
 ansible_ssh_user: ubuntu
 build_state: present
 os_github_user: rstarmer
-os_network_names: [broadband, adslvpn, sdslvpn, tenmpls, prompls ]
-os_network_cidrs: [192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24, 192.168.40.0/24, 192.168.50.0/24]
+os_network_names: [mgmt, broadband, adslvpn, sdslvpn, tenmpls, prompls ]
+os_network_cidrs: [192.168.5.0/24, 192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24, 192.168.40.0/24, 192.168.50.0/24]
 os_server_key: kumulus
 os_ucpe_nodes: ["SFO","BOS"]
 os_irg_nodes: ["IRG","PIRG"]
