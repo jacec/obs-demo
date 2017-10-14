@@ -67,26 +67,26 @@ nodes:
     country: US
     tz: America/New_York
     interfaces:
-      - ens4
-      - ens5
-      - ens6
-      - ens7
-      - ens8
+      - enp11s0
+      - enp9s0f0
+      - enp9s0f1
+      - enp9s0f2
+      - enp9s0f3
     bridges:
       broadband:
-              interface: ens4
+              interface: enp11s0
               dhcp: false
       adslvpn:
-              interface: ens5
+              interface: enp9s0f0
               dhcp: false
       sdslvpn:
-              interface: ens6
+              interface: enp9s0f1
               dhcp: false
       tmpls:
-              interface: ens7
+              interface: enp9s0f2
               dhcp: false
       pmpls:
-              interface: ens8
+              interface: enp9s0f3
               dhcp: false
       pvgwirg0:
               interface: false
@@ -142,18 +142,18 @@ nodes:
     country: US
     tz: America/New_York
     interfaces: 
-      - ens4
-      - ens5
-      - ens6
+      - enp0s20f1
+      - enp0s20f2
+      - enp0s20f3
     bridges:
       broadband:
-              interface: ens4
+              interface: enp0s20f1
               dhcp: false
       adslvpn:
-              interface: ens5
+              interface: enp0s20f2
               dhcp: false
       tmpls:
-              interface: ens6
+              interface: enp0s20f3
               dhcp: false
       pgwirg0:
               interface: false
@@ -170,18 +170,17 @@ nodes:
     country: US
     tz: America/Los_Angeles
     interfaces:
-      - ens4
-      - ens5
-      - ens6
+      - eth2
+      - eth3
     bridges:
       broadband:
-              interface: ens4
+              interface: eth1
               dhcp: false
       adslvpn:
-              interface: ens5
+              interface: eth2
               dhcp: false
       tenremote:
-              interface: ens6
+              interface: eth3
               dhcp: false
       tenbroadband:
               interface: false
@@ -214,18 +213,17 @@ nodes:
     country: US
     tz: America/New_York
     interfaces:
-      - ens4
-      - ens5
-      - ens6
+      - eth2
+      - eth3
     bridges:
       broadband:
-              interface: ens4
+              interface: eth1
               dhcp: false
       adslvpn:
-              interface: ens5
+              interface: eth2
               dhcp: false
       tenremote:
-              interface: ens6
+              interface: eth3
               dhcp: false
       tenbroadband:
               interface: false

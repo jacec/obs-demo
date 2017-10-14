@@ -17,10 +17,10 @@
     # Create ucpe specific networks, SCM VPN endpoint, etc.
     - include_role:
         name: irg
-      when: 'irg' in group_names
+      when: "'irg' in group_names"
     - include_role:
         name: ucpe
-      when: 'ucpe' in group_names
+      when: "'ucpe' in group_names"
 # register provider sites
     - include_role:
         name: scm_site
@@ -30,7 +30,7 @@
         site: "{{item.key}}"
         tz: "{{item.value.tz}}"
         country: "{{item.value.country}}"
-      with_dict: "{{prov_sites}}"
+      with_dict: "{{nodes[ansible_hostname|upper]}}"
 # register tenant sites
     - include_role:
         name: scm_site
@@ -40,7 +40,7 @@
         site: "{{item.key}}"
         tz: "{{item.value.tz}}"
         country: "{{item.value.country}}"
-      with_dict: "{{ten_sites}}"
+      with_dict: "{{nodes[ansible_hostname|upper]}}"
         
 #    - name: register ucpe vGW image path
 #      scm_image:

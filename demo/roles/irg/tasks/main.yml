@@ -1,9 +1,7 @@
-- name: update network config for multiple bridges
-  become: true
-  become_user: root
-  template:
-    src: templates/10.j2
-    dest: /etc/network/interfaces.d/10-kvm-bridge.cfg
+- set_fact:
+     node_name: "{{ansible_nodename|upper}}"
+- include_role:
+    name: ubuntu_bridges
 
 - name: update config to avoid cloud-config
   become: true
