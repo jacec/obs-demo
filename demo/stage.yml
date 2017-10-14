@@ -5,4 +5,5 @@
   tasks:
     - include_role:
         name: scm
-
+    - include_role:
+        name: wan

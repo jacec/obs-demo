@@ -3,11 +3,17 @@ import requests
 user = admin
 password = pppp
 url = https://proscm.service.rvbdemo.com/api/scm.config/1.0/
-org = data['org']
-direction = data['direction']
+org = LOREAL
+site = HQ
+zone = LAN
+node = ''
+node_id = ''
 
 org_id = ''
-network_segments = []
+net_segment =''
+port_id = ''
+zone_id = ''
+site_id = ''
 
 r = requests.get(url+"orgs", auth=(user, password), verify=False).json()
 for n in r['items']:
@@ -19,13 +25,31 @@ if org_id == '':
     print "no org"
     #return(False,True,{"meta": "No such org:"+org})
 
-r = requests.get(url+"org/"+org_id+"/networks", auth=(user, password), verify=False).json()
+r = requests.get(url+"org/"+org_id+"/sites", auth=(user, password), verify=False).json()
 for n in r['items']:
-    if not n['zone'] is None:
-        network_segments.append(n['zone'])
+    if n['name'] is site:
+        site_id = n['id']
 
-if network_segments == []:
-    print "no network segments"
+if site_id == ''
+    print "no site"
+    #return(False,True,{"meta": "No network segments"})
+
+r = requests.get(url+"site/"+site_id+"/zones", auth=(user, password), verify=False).json()
+for n in r['items']:
+    if  n['name'] is zone:
+        zone_id = n['id']
+
+if zone == ''
+    print "no zone"
+    #return(False,True,{"meta": "No network segments"})
+
+r = requests.get(url+"site/"+site_id+"/nodes", auth=(user, password), verify=False).json()
+for n in r['items']:
+    if  n['serial'] is serial:
+        node_id = n['id']
+
+if node_id == ''
+    print "no node"
     #return(False,True,{"meta": "No network segments"})
 
 payload = {

@@ -7,15 +7,56 @@ prov_scm_org_long: Loreal Inc.
 prov_scm_city: Paris
 prov_scm_country: FR
 prov_scm_tz: Europe/Berlin
-prov_scm_url: https://proscm.rvbdemo.com/api/scm.config/1.0/
+prov_scm_url: https://proscm.service.rvbdemo.com/api/scm.config/1.0/
 prov_scm_names: ["IRG","PIRG","SFO","BOS"]
 ten_scm_org: LOREAL
 ten_scm_org_long: Loreal Inc.
 ten_scm_city: Paris
 ten_scm_country: FR 
 ten_scm_tz: Europe/Berlin
-ten_scm_url: https://tenscm.rvbdemo.com/api/scm.config/1.0/
+ten_scm_url: https://tenscm.service.rvbdemo.com/api/scm.config/1.0/
 ten_scm_names: ["IRG","PIRG","SFO","BOS"]
+prowans:
+  adslvpn:
+    internet: false
+    wan_long: ADSL VPN network
+  broadband:
+    internet: true
+    wan_long: Broadband network
+  sdslvpn:
+    internet: false
+    wan_long: SDSL Fixed Line network
+  pgwirg0:
+    internet: false
+    wan_long: Provider IRG vgw segment
+tenwans:
+  irg0:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  irg3:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  irg4:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  irg5:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  tenadslvpn:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  tenbroadband:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  tenvgw0:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  tenvgw1:
+    internet: false
+    wan_long: Provider IRG vgw segment
+  tenvgw2:
+    internet: false
+    wan_long: Provider IRG vgw segment
 nodes:
   IRG:
     city: Boston
@@ -78,7 +119,7 @@ nodes:
           - adslvpn
           - sdslvpn
       tenvgw0:
-        wan:
+        gan:
           - tenvgw0
           - irg3
           - broadband
