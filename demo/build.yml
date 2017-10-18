@@ -5,6 +5,8 @@
   tasks:
     - include_role:
         name: scm
+    - include_role:
+        name: scm_wan
 
 - hosts: all
   gather_facts: False
@@ -26,21 +28,25 @@
         name: scm_site
       vars:
         scm_url: "{{prov_scm_url}}"
+        scm_org: "{{prov_scm_org}}"
         city: "{{item.value.city}}"
         site: "{{item.key}}"
         tz: "{{item.value.tz}}"
         country: "{{item.value.country}}"
-      with_dict: "{{nodes[ansible_hostname|upper]}}"
+      with_dict: "{{nodes}}"
+      when: item.key == "{{ansible_hostname|upper}}"
 # register tenant sites
     - include_role:
         name: scm_site
       vars:
         scm_url: "{{ten_scm_url}}"
+        scm_org: "{{prov_scm_org}}"
         city: "{{item.value.city}}"
         site: "{{item.key}}"
         tz: "{{item.value.tz}}"
         country: "{{item.value.country}}"
-      with_dict: "{{nodes[ansible_hostname|upper]}}"
+      with_dict: "{{nodes}}"
+      when: item.key == "{{ansible_hostname|upper}}"
         
 #    - name: register ucpe vGW image path
 #      scm_image:

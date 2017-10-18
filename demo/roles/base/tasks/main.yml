@@ -13,6 +13,7 @@
     line: 'APT::Periodic::Enable "0";'
     dest: /etc/apt/apt.conf.d/10periodic
     create: yes
+  register: auto_update
 
 - name: Pass options to dpkg on run
   become: true
@@ -21,6 +22,7 @@
     upgrade: dist
     update_cache: yes
     dpkg_options: 'force-confold,force-confdef'
+  when: auto_update.changed
 - name: install default packages
   become: true
   become_user: root
@@ -50,12 +52,14 @@
   apt_key:
     keyserver: p80.pool.sks-keyservers.net
     id: 58118E89F3A912897C070ADBF76221572C52609D
+  when: docker
 - name: add dockerproject repo to apt lists
   become: true
   become_user: root
   apt_repository:
     repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
     state: present
+  when: docker
 - name: install docker-engine 1.12.6
   become: true
   become_user: root
@@ -64,6 +68,7 @@
    state: present
    force: yes
   register: docker_installed
+  when: docker
 - name: ensure the MountFlags=shared parameter is set for docker.service
   become: true
   become_user: root
@@ -73,6 +78,7 @@
     option: MountFlags
     value: shared
     mode: 0644
+  when: docker
 - name: restart docker service
   become: true
   become_user: root
@@ -80,7 +86,7 @@
     state: restarted
     daemon_reload: yes
     name: docker
-  when: docker_installed.changed
+  when: docker_installed.changed and docker
 
 - name: update pip
   become: true

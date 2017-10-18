@@ -1,0 +1,11 @@
+- name: create uplink
+  scm_uplink:
+    url: "{{prov_scm_url}}"
+    user: "admin"
+    password: "pppp"
+    org: "{{prov_scm_org}}"
+    wan: "{{item.key}}"
+    wan_long: "{{item.value.wan_long}}"
+    internet: "{{item.value.internet}}"
+    state: "present"
+  with_dict: "{{prowans}}"

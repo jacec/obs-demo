@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  become_user: root
+  tasks:
+    - include_role:
+        name: scm_uplink
+      vars:
+        url: "{{prov_scm_url}}"
+        org: "{{prov_scm_org}}"
+        site: "{{ansible_hostname|upper}}"
+        wan: "
+      with_dict: "{{nodes}}"
+      #when: item.key == "{{ansible_hostname|upper}}"

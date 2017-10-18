@@ -5,6 +5,13 @@
   become_user: root
   vars:
     image_path: /var/lib/libvirt/images/virnos.img
+    irg_nets:
+      - pvgwirg0
+      - tvgw0irg1
+      - tvgw1irg2
+      - tvgw2irg3
+      - tmpls
+      - pmpls
     networks:
       br0:
         addr: 172.20.0.0

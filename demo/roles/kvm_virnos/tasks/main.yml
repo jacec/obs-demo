@@ -1,18 +1,18 @@
 ---
-- name: define vgw network
-  virt_net:
-    name: "{{item.key}}"
-    command: define 
-    xml: "{{ lookup('template','net.j2') }}"
-  with_dict: "{{networks}}"
-  register: net_define
-
-- name: start networks
-  virt_net:
-    name: "{{item.key}}"
-    command: create
-  with_dict: "{{networks}}"
-  when: net_define.changed
+#- name: define vgw network
+#  virt_net:
+#    name: "{{item.key}}"
+#    command: define 
+#    xml: "{{ lookup('template','net.j2') }}"
+#  with_dict: "{{networks}}"
+#  register: net_define
+#
+#- name: start networks
+#  virt_net:
+#    name: "{{item.key}}"
+#    command: create
+#  with_dict: "{{networks}}"
+#  when: net_define.changed
 
 - name: define vgw instance
   virt:

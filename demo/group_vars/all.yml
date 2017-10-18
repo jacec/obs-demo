@@ -1,5 +1,91 @@
+wans:
+  IRG:
+    virbr5:
+      interface: virbr5
+      internet: true
+      wan_long: Tenant Provider Interlink
+    virbr6:
+      interface: virbr6
+      internet: true
+      wan_long: Provider IRG Interlink
+    virbr7:
+      interface: virbr7
+      internet: false
+      wan_long: Tenant IRG Interlink
+    virbr11:
+      interface: virbr11
+      internet: false
+      wan_long: Tenant Hybrind Link P?
+    virbr12:
+      interface: virbr12
+      internet: false
+      wan_long: Tenant Hybrid VPN Link
+  PIRG:
+    virbr2:
+      interface: virbr2
+      internet: true
+      wan_long: Provider IRG HUB Link
+  SCM:
+    virbr3:
+      interface: virbr3
+      internet: true
+      wan_long: Provider SCM Spoke Link
+  SFO:
+    virbr1:
+      interface: virbr1
+      internet: true
+      wan_long: Provider uCPE Spoke Link
+    virbr1a:
+      interface: virbr1
+      internet: false
+      wan_long: Tenant uCPE Spoke Link
+    virbr3:
+      interface: virbr3
+      internet: false
+      wan_long: Provider SCM Spoke Link
+prouplinks:
+  IRG:
+    LAN1: virbr6
+  PIRG:
+    LAN1: virbr2
+  SFO:
+    LAN1: virbr1
+    LAN2: virbr1a
+    LAN3: virbr3
+  SCM:
+    LAN1: virbr3
+
+tenuplinks:
+  IRG:
+    LAN1: virbr5
+    LAN2: virbr7
+    LAN3: virbr11
+    LAN4: virbr12
+  SFO:
+    LAN1: virbr11
+    LAN2: virbr12
+
+prozones:
+  IRG:
+    LAN2: virbr5
+    LAN3: virbr3
+  PIRG:
+    LAN2: virbr3
+  SCM:
+    LAN2: virbr0
+    LAN3: virbr2
+  SFO:
+    LAN2: virbr0
+    LAN3: virbr12
+    LAN4: virbr11
+tenzones:
+  SFO:
+    LAN3: virbr13
+
+
 ansible_ssh_user: ubuntu
 build_state: present
+docker: false
 os_github_user: rstarmer
 os_network_names: [mgmt, broadband, adslvpn, sdslvpn, tenmpls, prompls ]
 os_network_cidrs: [192.168.5.0/24, 192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24, 192.168.40.0/24, 192.168.50.0/24]

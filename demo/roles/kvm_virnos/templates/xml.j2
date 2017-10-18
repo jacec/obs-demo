@@ -1,11 +1,11 @@
-<domain type="kvm">
+<domain type='kvm'>
   <name>{{vm_name}}</name>
   <uuid>{{vm_name|to_uuid}}</uuid>
   <memory>8388608</memory>
   <currentMemory>8388608</currentMemory>
   <vcpu>4</vcpu>
   <os>
-    <type arch="x86_64">hvm</type>
+    <type arch='x86_64'>hvm</type>
     <boot dev="hd"/>
   </os>
   <features>
@@ -44,7 +44,7 @@
     <controller type="usb" index="0" model="ich9-uhci3">
       <master startport="4"/>
     </controller>
-{% for key,value in networks.iteritems() %}
+{% for key in irg_nets %}
     <interface type="bridge">
       <source bridge="{{key}}"/>
       <model type="e1000" />
