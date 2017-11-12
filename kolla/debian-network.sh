@@ -44,6 +44,7 @@ cat >> ${GLOBALS_FILE} <<EOF
 ---
 kolla_internal_vip_address: "${VIP}"
 network_interface: "${NETWORK_INTERFACE}"
+api_interface: "${NETWORK_INTERFACE}"
 neutron_external_interface: "${NEUTRON_INTERFACE}"
 enable_haproxy: "no"
 #enable_central_logging: "yes"

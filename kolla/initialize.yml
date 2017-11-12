@@ -124,18 +124,13 @@
   - name: generate passwords
     command: kolla-genpwd
 
-  - name: create debian config from script
-    script: debian-network.sh
-    register: debian_config
-    args:
-      creates: /etc/kolla/globals.yml
   - name: create dummy interface
     command: modprobe dummy
   - name: create dummy interface ext
     command: ip link set name ext dev dummy0 creates=/etc/modprobe.d/dummy.conf
   - name: ensure dummy on reboot
     lineinfile:
-      line: install dummy /sbin/modprobe --ignore-install dummy; /sbin/ip link set name ext dev dummy0
+      line: install dummy; /sbin/modprobe --ignore-install dummy; /sbin/ip link set name ext dev dummy0
       path: /etc/modprobe.d/dummy.conf
       create: yes
   - name: make interface ext permanent
@@ -147,15 +142,26 @@
           up ip link set dev ext up
           post-down ip link del dev dummy0
 
+  - name: create debian config from script
+    script: debian-network.sh
+    register: debian_config
+    args:
+      creates: /etc/kolla/globals.yml
+  - name: check for nested kvm support
+    shell: cat /sys/module/kvm_intel/parameters/nested | grep Y
+    register: kvm_nested
+    ignore_errors: yes
   - name: add nested VM support to the kernel
     lineinfile:
-      line: options kvm-intel nested=1
+      line: options kvm_intel nested=1
       state: present
-      path: /etc/modprobe.d/kvm-intel.conf
+      path: /etc/modprobe.d/kvm_intel.conf
       create: yes
+    when: kvm_nested.rc
   - name: reset kvm module
-    shell:  modprobe -r kvm && modprobe kvm
+    shell: modprobe -r kvm_intel && modprobe kvm_intel
     ignore_errors: true
+    when: kvm_nested.rc
 
 #  - name: label devices
 #    include: labels.yml
